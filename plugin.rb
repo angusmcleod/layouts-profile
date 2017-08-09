@@ -6,7 +6,5 @@
 register_asset 'stylesheets/user-widget.scss'
 
 after_initialize do
-  SiteSetting.class_eval do
-    @choices[:layouts_sidebar_left_widgets].push('profile')
-  end
+  DiscourseLayouts::WidgetHelper.add_widget('profile')
 end
