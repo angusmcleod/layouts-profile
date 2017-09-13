@@ -1,4 +1,5 @@
 import { createWidget } from 'discourse/widgets/widget';
+import ComponentConnector from 'discourse/widgets/component_connector';
 import { h } from 'virtual-dom';
 import { avatarImg } from 'discourse/widgets/post';
 import { cook } from 'discourse/lib/text';
@@ -21,9 +22,9 @@ export default createWidget('profile', {
   },
 
   toggleBookmark() {
-    this.state.bookmarked = !this.state.bookmarked
-    const topicController = this.register.lookup('controller:topic')
-    topicController.send('toggleBookmark')
+    this.state.bookmarked = !this.state.bookmarked;
+    const topicController = this.register.lookup('controller:topic');
+    topicController.send('toggleBookmark');
   },
 
   sendShowLogin() {
@@ -44,7 +45,7 @@ export default createWidget('profile', {
   html(attrs, state) {
     const { currentUser } = this;
     const topic = state.topic;
-    let contents = []
+    let contents = [];
 
     if (currentUser) {
       const username = currentUser.get('username');
@@ -76,17 +77,19 @@ export default createWidget('profile', {
       )
     }
 
-    contents.push(h('hr'))
+    contents.push(h('hr'));
 
     if (topic) {
+
       if (currentUser && topic.details.can_invite_to) {
         contents.push(this.attach('button', {
           className: 'btn',
           label: 'topic.invite_reply.title',
           icon: 'envelope-o',
           action: 'showInvite'
-        }))
+        }));
       }
+
       contents.push(this.attach('button', {
         action: 'share',
         className: 'btn share',
@@ -95,13 +98,14 @@ export default createWidget('profile', {
         data: {
           'share-url': topic.get('shareUrl')
         }
-      }))
+      }));
+
       if (currentUser) {
         let tooltip = state.bookmarked ? 'bookmarks.created' : 'bookmarks.not_bookmarked';
         let label = state.bookmarked ? 'bookmarks.remove' : 'bookmarked.title';
         let buttonClass = 'btn bookmark';
 
-        if (state.bookmarked) { buttonClass += ' bookmarked' }
+        if (state.bookmarked) buttonClass += ' bookmarked';
 
         contents.push(
           this.attach('button', {
@@ -111,10 +115,10 @@ export default createWidget('profile', {
             icon: 'bookmark',
             className: buttonClass
           }),
-          this.attach('topic-notifications-button', {
-            topic: topic,
-            appendReason: true,
-            showFullTitle: true
+          new ComponentConnector(this,'topic-notifications-button', {
+            topic,
+            appendReason: false,
+            showFullTitle: false
           })
         )
       } else {
@@ -123,7 +127,7 @@ export default createWidget('profile', {
           label: 'topic.reply.title',
           icon: 'reply',
           action: 'sendShowLogin'
-        }))
+        }));
       }
     } else {
       if (!this.site.mobileView && this.canInviteToForum()) {
@@ -133,7 +137,7 @@ export default createWidget('profile', {
           icon: 'user-plus',
           label: 'user.invited.title',
           model: currentUser
-        }))
+        }));
       }
     }
 
