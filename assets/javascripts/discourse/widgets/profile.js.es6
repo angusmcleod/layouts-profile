@@ -44,56 +44,36 @@ export default createWidget('profile', {
 
   html(attrs, state) {
     const { currentUser } = this;
+    const userPath = this.currentUser.get('path');
     const topic = state.topic;
     let contents = [];
 
     if (currentUser) {
       const username = currentUser.get('username');
       contents.push(
-        avatarImg('large', {
+        h('div.avatar', avatarImg('large', {
           template: currentUser.get('avatar_template'),
           username: username
-        }),
-        h('div.handles', [
-          h('h3', this.attach('link', {
-            route: 'user',
-            model: currentUser,
-            className: 'user-activity-link',
-            icon: 'user',
-            rawLabel: username
-          })),
-          h('p', `@${username}`)
-        ])
-      )
-    } else {
-      contents.push(
-        h('div.widget-header', Discourse.SiteSettings.widget_profile_guest_welcome_title),
-        h('div.welcome-body', new RawHtml({ html: cook(Discourse.SiteSettings.widget_profile_guest_welcome_body).string })),
-        this.attach('button', {
-          label: "sign_up",
-          className: 'btn-primary sign-up-button',
-          action: "sendShowCreateAccount"
-        })
+        }))
       )
     }
 
-    contents.push(h('hr'));
+    let actions = [];
 
     if (topic) {
-
       if (currentUser && topic.details.can_invite_to) {
-        contents.push(this.attach('button', {
-          className: 'btn',
+        actions.push(this.attach('button', {
           label: 'topic.invite_reply.title',
           icon: 'envelope-o',
-          action: 'showInvite'
+          action: 'showInvite',
+          className: 'btn-small'
         }));
       }
 
-      contents.push(this.attach('button', {
+      actions.push(this.attach('button', {
         action: 'share',
-        className: 'btn share',
         label: 'topic.share.title',
+        className: 'btn-small share',
         icon: 'link',
         data: {
           'share-url': topic.get('shareUrl')
@@ -107,39 +87,45 @@ export default createWidget('profile', {
 
         if (state.bookmarked) buttonClass += ' bookmarked';
 
-        contents.push(
+        actions.push(
           this.attach('button', {
             action: 'toggleBookmark',
             title: tooltip,
             label: label,
             icon: 'bookmark',
-            className: buttonClass
+            className: 'btn-small'
           }),
           new ComponentConnector(this,'topic-notifications-button', {
             topic,
             appendReason: false,
-            showFullTitle: false
+            showFullTitle: true,
+            class: 'btn-small'
           })
         )
       } else {
-        contents.push(this.attach('button', {
-          className: 'btn',
+        actions.push(this.attach('button', {
           label: 'topic.reply.title',
           icon: 'reply',
-          action: 'sendShowLogin'
+          action: 'sendShowLogin',
+          className: 'btn-small'
         }));
       }
     } else {
       if (!this.site.mobileView && this.canInviteToForum()) {
-        contents.push(this.attach('link', {
+        actions.push(this.attach('button', {
           route: 'userInvited',
-          className: 'btn',
           icon: 'user-plus',
           label: 'user.invited.title',
-          model: currentUser
+          model: currentUser,
+          className: 'btn-small'
         }));
       }
     }
+
+    contents.push(
+      h('div.profile-top', this.attach('user-menu-links', { path: userPath })),
+      h('div.profile-actions', actions)
+    );
 
     return h('div.widget-inner', contents);
   }
