@@ -6,7 +6,7 @@
 
   .profile-top {
     overflow: hidden;
-    padding: 5px 5px 5px 15px;
+    padding: 5px;
   }
 
   .menu-links-header {
@@ -16,6 +16,7 @@
 
     a {
       display: inline-block;
+      padding: 0.4em;
     }
 
     .menu-links-row {
