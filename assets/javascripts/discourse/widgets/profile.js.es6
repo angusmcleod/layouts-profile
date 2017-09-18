@@ -58,6 +58,12 @@ export default createWidget('profile', {
         })),
         h('div.profile-top', this.attach('user-menu-links', { path: userPath }))
       )
+    } else {
+      contents.push(h('div.widget-title', I18n.t('profile_widget.guest')));
+
+      if (!topic) {
+        contents.push(this.attach('login-required'));
+      }
     }
 
     let actions = [];
