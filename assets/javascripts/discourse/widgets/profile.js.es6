@@ -44,17 +44,19 @@ export default createWidget('profile', {
 
   html(attrs, state) {
     const { currentUser } = this;
-    const userPath = this.currentUser.get('path');
     const topic = state.topic;
     let contents = [];
 
     if (currentUser) {
       const username = currentUser.get('username');
+      const userPath = currentUser.get('path');
+
       contents.push(
         h('div.avatar', avatarImg('large', {
           template: currentUser.get('avatar_template'),
           username: username
-        }))
+        })),
+        h('div.profile-top', this.attach('user-menu-links', { path: userPath }))
       )
     }
 
@@ -123,7 +125,6 @@ export default createWidget('profile', {
     }
 
     contents.push(
-      h('div.profile-top', this.attach('user-menu-links', { path: userPath })),
       h('div.profile-actions', actions)
     );
 
