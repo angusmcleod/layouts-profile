@@ -6,5 +6,5 @@
 register_asset 'stylesheets/layouts-profile.scss'
 
 after_initialize do
-  DiscourseLayouts::WidgetHelper.add_widget('profile')
+  DiscourseLayouts::WidgetHelper.add_widget('profile', position: 'left', order: 'start')
 end
