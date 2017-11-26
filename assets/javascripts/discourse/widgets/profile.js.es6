@@ -1,20 +1,17 @@
 import { createWidget } from 'discourse/widgets/widget';
-import ComponentConnector from 'discourse/widgets/component_connector';
+import ComponentConnector from 'discourse/widgets/component-connector';
 import { h } from 'virtual-dom';
 import { avatarImg } from 'discourse/widgets/post';
-import { cook } from 'discourse/lib/text';
-import RawHtml from 'discourse/widgets/raw-html';
-import showModal from 'discourse/lib/show-modal';
 
 export default createWidget('profile', {
   tagName: 'div.user-profile.widget-container',
-  buildKey: (attrs) => 'user-profile',
+  buildKey: () => 'user-profile',
 
   defaultState(attrs) {
     return {
       topic: attrs.topic,
       bookmarked: attrs.topic ? attrs.topic.bookmarked : null
-    }
+    };
   },
 
   canInviteToForum() {
@@ -57,7 +54,7 @@ export default createWidget('profile', {
           username: username
         })),
         h('div.profile-top', this.attach('user-menu-links', { path: userPath }))
-      )
+      );
     } else {
       contents.push(h('div.widget-title', I18n.t('profile_widget.guest')));
 
@@ -90,8 +87,8 @@ export default createWidget('profile', {
 
       if (currentUser) {
         let tooltip = state.bookmarked ? 'bookmarks.created' : 'bookmarks.not_bookmarked';
-        let label = state.bookmarked ? 'bookmarks.remove' : 'bookmarked.title';
-        let buttonClass = 'btn bookmark';
+        let label = state.bookmarked ? 'bookmarked.clear_bookmarks' : 'bookmarked.title';
+        let buttonClass = 'btn btn-small bookmark';
 
         if (state.bookmarked) buttonClass += ' bookmarked';
 
@@ -101,15 +98,15 @@ export default createWidget('profile', {
             title: tooltip,
             label: label,
             icon: 'bookmark',
-            className: 'btn-small'
+            className: buttonClass
           }),
           new ComponentConnector(this,'topic-notifications-button', {
             topic,
             appendReason: false,
             showFullTitle: true,
-            class: 'btn-small'
+            className: 'btn-small'
           })
-        )
+        );
       } else {
         actions.push(this.attach('button', {
           label: 'topic.reply.title',
@@ -120,12 +117,12 @@ export default createWidget('profile', {
       }
     } else {
       if (!this.site.mobileView && this.canInviteToForum()) {
-        actions.push(this.attach('button', {
+        actions.push(this.attach('link', {
           route: 'userInvited',
           icon: 'user-plus',
           label: 'user.invited.title',
           model: currentUser,
-          className: 'btn-small'
+          className: 'btn btn-small'
         }));
       }
     }
