@@ -24,6 +24,10 @@ export default createWidget('profile', {
     topicController.send('toggleBookmark');
   },
 
+  showLogin() {
+    this.sendShowLogin();
+  },
+
   sendShowLogin() {
     const appRoute = this.register.lookup('route:application');
     appRoute.send('showLogin');
